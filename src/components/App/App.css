@@ -4,6 +4,22 @@
 
 body {
   font-family: "Golos", Arial, Helvetica, sans-serif;
+  color: #1D222A;
+  font-weight: 400;
+  scrollbar-width: thin;
+  scrollbar-color: #D4D5D9 transparent;
+}
+
+body::-webkit-scrollbar {
+  width: 4px;
+}
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #D4D5D9;
+  border-radius: 2px;
+  border: 0;
 }
 
 .page {

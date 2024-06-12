@@ -74,8 +74,14 @@ class MainApi {
     return this._fetch("/ship/ships", "GET");
   }
 
+  // Список опорных точек
   getNavigationPoints() {
     return this._fetch("/navigation/navigation-points", "GET");
+  }
+
+  // Заявки пользователя (кроме согласованных)
+  getRouteRequests() {
+    return this._fetch("/navigation/route-requests", "GET");
   }
 }
 

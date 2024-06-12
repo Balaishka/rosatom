@@ -38,13 +38,17 @@ export default function Maps({ navPoints, shipGeo }) {
 
     return (
         <>
-            <YMaps query={{load: 'Map,Layer,geoObject.addon.balloon', lang: "ru_RU", ns: "use-load-option"}}>
-                <div>
+            <YMaps query={{
+                load: 'Map,Layer,geoObject.addon.balloon',
+                lang: "ru_RU",
+                ns: "use-load-option",
+                apikey: "c5678c43-0304-4bfb-8d59-84de14c585fe"
+            }}>
                     <Map defaultState={{center: [73.290841, 55.573121], zoom: 5}}
                          options={{yandexMapDisablePoiInteractivity: true, minZoom: 3, maxZoom: 8}}
                          onLoad={onLoad}
                          instanceRef={onMapReference}
-                         style={{width: '100vw', height: 'calc(100vh - 140px)'}}
+                         style={{width: '100%', height: '100%'}}
                     >
                         {/* <Polyline geometry={geometry} options={{
                             balloonCloseButton: false,
@@ -77,7 +81,6 @@ export default function Maps({ navPoints, shipGeo }) {
                             iconOffset: [-15, 12]
                           }} />
                     </Map>
-                </div>
             </YMaps>
         </>
     );

@@ -1,14 +1,23 @@
 import "./Applications.css";
 import arrow from "../../images/arrow-down.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Application from "../Application/Application";
+import { applications } from "../../configs/constants";
+import ApplicationsProcess from "../ApplicationsProcess/ApplicationsProcess";
 
-export default function Applications({ getShips }) {
+export default function Applications({ getShips, getRouteRequests, applicationsPoints, applicationsInProcess }) {
 
     const [isOpen, setIsOpen] = useState(true);
+    const [selectedApplications, setSelectedApplications] = useState(Number(localStorage.getItem("selectedApplications")) ? Number(localStorage.getItem("selectedApplications")):0);
+
+    useEffect(() => {
+        const routeRequests = localStorage.getItem("applicationsInProcess");
+        if (!routeRequests) {
+            getRouteRequests();
+        }
+    }, []);
 
     function toggleMenu() {
-        //getShips();
         setIsOpen(!isOpen);
     }
 
@@ -16,7 +25,7 @@ export default function Applications({ getShips }) {
         <div className={`applications ${isOpen ? "":"applications_closed"}`}>
             <div className="applications__header" onClick={toggleMenu}>
                 <h2 className="applications__title">Мои заявки</h2>
-                <img className={`applications__arrow ${isOpen ? "":"applications__arrow_closed"}`} slt="" src={arrow} />
+                <img className={`applications__arrow ${isOpen ? "":"applications__arrow_closed"}`} alt="" src={arrow} />
             </div>
 
             {isOpen && 
@@ -24,19 +33,36 @@ export default function Applications({ getShips }) {
                     <div className="applications__body">
                         <nav className="applications__nav">
                             <ul className="applications__nav-list">
-                                <li className="applications__nav-item applications__nav-item_active">В маршруте</li>
-                                <li className="applications__nav-item">В обработке</li>
-                                <li className="applications__nav-item">Архив</li>
+                                {applications.map((item, index) => {
+                                    function onClick() {
+                                        localStorage.setItem("selectedApplications", index);
+                                        setSelectedApplications(index);
+                                    }
+                                    return (
+                                        <li key={index} className={`applications__nav-item ${selectedApplications === index ? "applications__nav-item_active":""}`} onClick={onClick}>
+                                            <span className="applications__nav-text">{item}</span>
+                                            <span className="applications__nav-number">{applicationsPoints[index]}</span>
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         </nav>
+                        <div className="applications__block">
+                            <ul className="applications__list">
+                                {selectedApplications === 0 && 
+                                    <Application />
+                                }
 
-                        <ul className="applications__list">
-                            <Application />
-                        </ul>
+                                {selectedApplications === 1 && 
+                                    <ApplicationsProcess applicationsInProcess={applicationsInProcess} />
+                                }
+                            </ul>
+                        </div>
+                        
                     </div>
 
                     <div className="applications__footer">
-                        <button className="applications__btn" type="button">Подать новую заявку</button>
+                        <button className="applications__btn" type="button">Новая заявка</button>
                     </div>
                 </div>
             }
