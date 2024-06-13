@@ -43,11 +43,7 @@ function App() {
       ? JSON.parse(localStorage.getItem("applicationsPoints"))
       : [0, 0, 0]
   );
-  const [applicationsInProcess, setApplicationsInProcess] = useState(
-    localStorage.getItem("applicationsInProcess")
-      ? JSON.parse(localStorage.getItem("applicationsInProcess"))
-      : []
-  );
+  const [allApplications, setAllApplications] = useState(localStorage.getItem("allApplications") ? localStorage.getItem("allApplications"):[]);
 
   const history = useHistory();
   const { pathname } = useLocation();
@@ -164,6 +160,7 @@ function App() {
     mainApi
       .getNavigationPoints()
       .then((res) => {
+        console.log(res);
         setNavPoints(res);
         localStorage.setItem("navPoints", JSON.stringify(res));
       })
@@ -191,24 +188,20 @@ function App() {
       });
   }
 
-  // Заявки пользователя (вроме согласованных)
-  function getRouteRequests() {
+  // Заявки
+  function getAllApplications() {
     setIsLoading(true);
     mainApi
-      .getRouteRequests()
+      .getAllApplications()
       .then((res) => {
-        //console.log(res.requests);
-
-        setApplicationsInProcess(res.requests);
-        localStorage.setItem(
-          "applicationsInProcess",
-          JSON.stringify(res.requests)
-        );
+        console.log(res);
+        setAllApplications(res);
+        localStorage.setItem("allApplications", res);
 
         const points = [
-          applicationsPoints[0],
-          res.requests.length,
-          applicationsPoints[2],
+          res.agreed.length,
+          res.pending.length,
+          res.archive.length,
         ];
         localStorage.setItem("applicationsPoints", JSON.stringify(points));
         setApplicationsPoints(points);
@@ -244,9 +237,9 @@ function App() {
                   getNavigationPoints={getNavigationPoints}
                   navPoints={navPoints}
                   getShips={getShips}
-                  getRouteRequests={getRouteRequests}
+                  getAllApplications={getAllApplications}
                   applicationsPoints={applicationsPoints}
-                  applicationsInProcess={applicationsInProcess}
+                  allApplications={allApplications}
                 />
               </ProtectedRoute>
 

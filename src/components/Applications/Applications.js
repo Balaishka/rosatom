@@ -3,19 +3,14 @@ import arrow from "../../images/arrow-down.svg";
 import { useEffect, useState } from "react";
 import Application from "../Application/Application";
 import { applications } from "../../configs/constants";
-import ApplicationsProcess from "../ApplicationsProcess/ApplicationsProcess";
+import ApplicationsPending from "../ApplicationsPending/ApplicationsPending";
+import ApplicationsAgreed from "../ApplicationsAgreed/ApplicationsAgreed";
+import ApplicationsArchive from "../ApplicationsArchive/ApplicationsArchive";
 
-export default function Applications({ getShips, getRouteRequests, applicationsPoints, applicationsInProcess }) {
+export default function Applications({ getShips, applicationsPoints, allApplications }) {
 
     const [isOpen, setIsOpen] = useState(true);
     const [selectedApplications, setSelectedApplications] = useState(Number(localStorage.getItem("selectedApplications")) ? Number(localStorage.getItem("selectedApplications")):0);
-
-    useEffect(() => {
-        const routeRequests = localStorage.getItem("applicationsInProcess");
-        if (!routeRequests) {
-            getRouteRequests();
-        }
-    }, []);
 
     function toggleMenu() {
         setIsOpen(!isOpen);
@@ -50,11 +45,15 @@ export default function Applications({ getShips, getRouteRequests, applicationsP
                         <div className="applications__block">
                             <ul className="applications__list">
                                 {selectedApplications === 0 && 
-                                    <Application />
+                                    <ApplicationsAgreed applications={allApplications.agreed} />
                                 }
 
                                 {selectedApplications === 1 && 
-                                    <ApplicationsProcess applicationsInProcess={applicationsInProcess} />
+                                    <ApplicationsPending applications={allApplications.pending} />
+                                }
+
+                                {selectedApplications === 2 && 
+                                    <ApplicationsArchive applications={allApplications.archive} />
                                 }
                             </ul>
                         </div>
@@ -62,7 +61,7 @@ export default function Applications({ getShips, getRouteRequests, applicationsP
                     </div>
 
                     <div className="applications__footer">
-                        <button className="applications__btn" type="button">Новая заявка</button>
+                        <button className="applications__btn content__btn" type="button">Новая заявка</button>
                     </div>
                 </div>
             }

@@ -79,8 +79,8 @@ class MainApi {
     return this._fetch("/navigation/navigation-points", "GET");
   }
 
-  // Заявки пользователя (кроме согласованных)
-  getRouteRequests() {
+  // Заявки
+  getAllApplications() {
     return this._fetch("/navigation/route-requests", "GET");
   }
 }
