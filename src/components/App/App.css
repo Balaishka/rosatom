@@ -56,3 +56,183 @@ body::-webkit-scrollbar-thumb {
 .content__btn:hover {
   background-color: #578DF4;
 }
+
+.form__field {
+  position: relative;
+  width: 100%;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.form__double-field {
+  position: relative;
+  width: 100%;
+  margin-bottom: 24px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 32px;
+}
+
+.form__label {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #80858E;
+  position: absolute;
+  top: 10px;
+  left: 16px;
+}
+
+.form__label_active {
+  font-size: 13px;
+  line-height: 1.23;
+  top: 2px;
+}
+
+.form__label:focus {
+  color: #525760;
+}
+
+.form__input {
+  width: 100%;
+  outline: none;
+  background-color: rgba(212, 213, 217, 0.32);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #525760;
+  border: none;
+}
+
+.form__input::placeholder {
+  color: #80858E !important;
+}
+
+.form__input::-webkit-input-placeholder {
+  color: #80858E !important;
+}
+
+.form__input::-moz-placeholder {
+  color: #80858E !important;
+}
+
+.form__input:-moz-placeholder {
+  color: #80858E !important;
+}
+
+.form__input:-ms-input-placeholder {
+  color: #80858E !important;
+}
+
+.form__input_active {
+  padding: 18px 16px 2px;
+}
+
+.form__input_error {
+  background-color: rgba(251, 152, 152, 0.16);
+}
+
+.form__input:focus {
+  color: #1D222A;
+}
+
+.form__input-error {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.23;
+  color: #E35454;
+  display: block;
+  position: absolute;
+  bottom: -16px;
+  left: 16px;
+}
+
+.form__btn {
+  background-color: #4480F3;
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+  text-align: center;
+  margin: 0 0 28px;
+  width: 100%;
+  cursor: pointer;
+  transition: 0.1s ease-in-out;
+  opacity: 1;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #FFFFFF;
+}
+
+.form__btn:not(.form__btn_disabled):hover {
+  background-color: #578DF4;
+}
+
+.form__btn_disabled {
+  opacity: .32;
+  cursor: default;
+}
+
+.form__error {
+  width: 100%;
+  text-align: center;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.23;
+  color: #E35454;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.form__text {
+  text-align: center;
+  margin: 0;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #525760;
+}
+
+.form__link {
+  color: #4480F3;
+  text-decoration: none;
+  transition: 0.1s ease-in-out;
+}
+
+.form__link:hover {
+  color: #578DF4;
+}
+
+.form__eye {
+  background-color: transparent;
+  border: none;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.form__eye-icon {
+  width: 100%;
+}
+
+.form__calendar-icon {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  cursor: pointer;
+}
+
+.form__calendar {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: #fff;
+  z-index: 10;
+}

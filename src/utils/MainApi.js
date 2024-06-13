@@ -64,7 +64,7 @@ class MainApi {
     return this._fetch("/user/logout", "POST");
   }
 
-  // Список кораблей
+  // Информация о юзере
   getUserInfo() {
     return this._fetch("/user/me", "GET");
   }

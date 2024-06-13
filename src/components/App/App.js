@@ -16,6 +16,7 @@ import {
 import Main from "../Main/Main";
 import Header from "../Header/Header";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import PopupNewApplication from "../PopupNewApplication/PopupNewApplication";
 
 function App() {
   // Ошибки
@@ -44,6 +45,12 @@ function App() {
       : [0, 0, 0]
   );
   const [allApplications, setAllApplications] = useState(localStorage.getItem("allApplications") ? localStorage.getItem("allApplications"):[]);
+
+  // Попапы
+  const [isPopupNewApplication, setIsPopupNewApplication] = useState(true);
+
+  // Список кораблей
+  const [ships, setShips] = useState([]);
 
   const history = useHistory();
   const { pathname } = useLocation();
@@ -172,22 +179,6 @@ function App() {
       });
   }
 
-  // Список кораблей
-  function getShips() {
-    setIsLoading(true);
-    mainApi
-      .getShips()
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(`Ошибка: ${err}`);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }
-
   // Заявки
   function getAllApplications() {
     setIsLoading(true);
@@ -214,7 +205,9 @@ function App() {
       });
   }
 
-  function closeAllPopups() {}
+  function closeAllPopups() {
+    setIsPopupNewApplication(false);
+  }
 
   function changeOption(index, name, setSelected) {
     if (index === 0) {
@@ -236,7 +229,6 @@ function App() {
                 <Main
                   getNavigationPoints={getNavigationPoints}
                   navPoints={navPoints}
-                  getShips={getShips}
                   getAllApplications={getAllApplications}
                   applicationsPoints={applicationsPoints}
                   allApplications={allApplications}
@@ -265,6 +257,14 @@ function App() {
               </Route>
             </Switch>
           </main>
+
+          <PopupNewApplication
+            isOpen={isPopupNewApplication}
+            onClose={closeAllPopups}
+            ships={ships}
+            changeOption={changeOption}
+            navPoints={navPoints}
+          />
 
           <Preloader isLoading={isLoading} />
         </div>

@@ -7,7 +7,6 @@ import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 export default function Main({
   getNavigationPoints,
   navPoints,
-  getShips,
   getAllApplications,
   applicationsPoints,
   allApplications,
@@ -29,7 +28,6 @@ export default function Main({
       <Maps navPoints={navPoints} shipGeo={shipGeo} />
       {currentUser.currentUser.role === "CAPTAIN" ? (
         <Applications
-          getShips={getShips}
           applicationsPoints={applicationsPoints}
           allApplications={allApplications}
         />

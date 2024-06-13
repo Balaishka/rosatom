@@ -1,13 +1,10 @@
 import "./Applications.css";
 import arrow from "../../images/arrow-down.svg";
-import { useEffect, useState } from "react";
-import Application from "../Application/Application";
+import { useState } from "react";
 import { applications } from "../../configs/constants";
-import ApplicationsPending from "../ApplicationsPending/ApplicationsPending";
-import ApplicationsAgreed from "../ApplicationsAgreed/ApplicationsAgreed";
-import ApplicationsArchive from "../ApplicationsArchive/ApplicationsArchive";
+import ApplicationsConstructor from "../ApplicationsConstructor/ApplicationsConstructor";
 
-export default function Applications({ getShips, applicationsPoints, allApplications }) {
+export default function Applications({ applicationsPoints, allApplications }) {
 
     const [isOpen, setIsOpen] = useState(true);
     const [selectedApplications, setSelectedApplications] = useState(Number(localStorage.getItem("selectedApplications")) ? Number(localStorage.getItem("selectedApplications")):0);
@@ -45,15 +42,15 @@ export default function Applications({ getShips, applicationsPoints, allApplicat
                         <div className="applications__block">
                             <ul className="applications__list">
                                 {selectedApplications === 0 && 
-                                    <ApplicationsAgreed applications={allApplications.agreed} />
+                                    <ApplicationsConstructor applications={allApplications.agreed} text="Согласованных маршрутов пока нет" status="agreed" />
                                 }
 
                                 {selectedApplications === 1 && 
-                                    <ApplicationsPending applications={allApplications.pending} />
+                                    <ApplicationsConstructor applications={allApplications.pending} text="Заявок в обработке пока нет" status="pending" />
                                 }
 
                                 {selectedApplications === 2 && 
-                                    <ApplicationsArchive applications={allApplications.archive} />
+                                    <ApplicationsConstructor applications={allApplications.archive} text="Маршрутов в архиве пока нет" status="archive" />
                                 }
                             </ul>
                         </div>

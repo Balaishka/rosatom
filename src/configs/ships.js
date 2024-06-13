@@ -12,3 +12,5 @@ const ships = [
         speed: "Скорость, узлы по чистой воде"
     },
 ];
+
+module.exports = {ships};
