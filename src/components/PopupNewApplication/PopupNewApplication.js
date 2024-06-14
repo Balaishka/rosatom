@@ -1,65 +1,80 @@
 import { useEffect, useState } from "react";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import Popup from "../Popup/Popup";
-import { errors } from "../../configs/errors";
-import { ships } from "../../configs/ships";
+import { errorsApplication } from "../../configs/errors";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
+import add from "../../images/add.svg";
+import SelectShips from "../SelectShips/SelectShips";
 
-export default function PopupNewApplication({ isOpen, onClose, changeOption, navPoints }) {
+export default function PopupNewApplication({ onClose, changeOption, navPoints, setNewApplication, getShips, ships, setInfoShip, openPopupShip, addZero }) {
 
     const [selectedShip, setSelectedShip] = useState(undefined);
     const [selectedStartPoint, setSelectedStartPoint] = useState(undefined);
     const [selectedFinishPoint, setSelectedFinishPoint] = useState(undefined);
-    const [selectedDate, setSelectedDate] = useState("");
+    const [selectedDate, setSelectedDate] = useState(undefined);
+    const [myDate, setMyDate] = useState("");
     const [isCalendar, setIsCalendar] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [isDisabled, setIsDisabled] = useState(true);
 
-    const [values, setValues] = useState({
-        ship: {},
-        date: "",
-        startPoint: "",
-        finishPoint: ""
-    });
+    useEffect(() => {
+        getShips();
+    }, []);
 
     useEffect(() => {
         if (selectedDate) {
-            toggleCalendar();
-            const newDate = `${addZero(selectedDate.getDate())}.${addZero(selectedDate.getMonth() + 1)}.${selectedDate.getFullYear()}`;
-            setValues({
-                ship: values.ship,
-                date: newDate,
-                startPoint: values.startPoint,
-                finishPoint: values.finishPoint
-            });
+            setDate();
         }
         
     }, [selectedDate]);
 
-    function handleChange(e) {
-        console.log(e.target);
-    }
+    useEffect(() => {
+        if (selectedShip !== undefined && selectedStartPoint !== undefined && selectedFinishPoint !== undefined && selectedDate !== undefined) {
+            setIsDisabled(false);
+        } else {
+            setIsDisabled(true);
+        }
+    }, [selectedShip, selectedStartPoint, selectedFinishPoint, selectedDate]);
 
     function toggleCalendar() {
         setIsCalendar(!isCalendar);
     }
 
-    function addZero(number) {
-        if (String(number).length === 1) {
-            return `0${number}`;
-        } else {
-            return String(number);
+    function setDate() {
+        toggleCalendar();
+        const newDate = `${addZero(selectedDate.getDate())}.${addZero(selectedDate.getMonth() + 1)}.${selectedDate.getFullYear()}`;
+        setMyDate(newDate);
+    }
+
+    function onSubmit(e) {
+        e.preventDefault();
+
+        if (selectedStartPoint === selectedFinishPoint) {
+            setErrorMessage(errorsApplication.points);
+            return;
         }
+
+        const date = `${selectedDate.getFullYear()}-${addZero(selectedDate.getMonth() + 1)}-${selectedDate.getDate()}`;
+        const values = {
+            shipId: ships[selectedShip].id,
+            startDate: date,
+            startPointId: navPoints[selectedStartPoint].id,
+            finishPointId: navPoints[selectedFinishPoint].id
+        };
+
+        setNewApplication(values);
     }
 
     return (
         <Popup
             title="Заявка на проводку"
-            isOpen={isOpen}
             onClose={onClose}
+            myClass="application"
         >
-            <form className="form form-application">
+            <form className="form form-application" name="form_application" onSubmit={onSubmit}>
                 <div className="form__field">
-                    <CustomSelect
+                    <SelectShips
                         myClass="form-application__select"
                         options={ships}
                         selectedOption={selectedShip}
@@ -67,17 +82,23 @@ export default function PopupNewApplication({ isOpen, onClose, changeOption, nav
                         name="selectedShip"
                         setSelected={setSelectedShip}
                         clue="Судно"
-                    />
+                        setInfoShip={setInfoShip}
+                    >
+                        <li className="my-select__button" onClick={openPopupShip}>
+                            <img className="my-select__button-img" src={add} alt="" />
+                            Добавить новое судно
+                        </li>
+                    </SelectShips>
                 </div>
 
                 <div className="form__field">
-                    <label className={`form__label ${values.date === "" ? "":"form__label_active"}`}>Дата отплытия</label>
+                    <label className={`form__label ${myDate === "" ? "":"form__label_active"}`}>Дата отплытия</label>
                     <input
                     name="login"
-                    className={`form__input ${values.date === "" ? "":"form__input_active"}`}
+                    className={`form__input ${myDate === "" ? "":"form__input_active"}`}
                     type="text"
-                    onChange={handleChange}
-                    value={values.date}
+                    disabled={true}
+                    value={myDate}
                     required
                     />
                     <svg onClick={toggleCalendar} className="form__calendar-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,6 +127,13 @@ export default function PopupNewApplication({ isOpen, onClose, changeOption, nav
                         setSelected={setSelectedFinishPoint}
                         clue="Пункт прибытия"
                     />
+                </div>
+
+                {errorMessage !== "" && <div className="form__error">{errorMessage}</div>}
+
+                <div className="form__btns">
+                    <button className="form__btn content__btn_secondary" type="button" onClick={onClose}>Отменить</button>
+                    <button className={`form__btn content__btn ${isDisabled ? "content__btn_disabled":""}`} type="submit" disabled={isDisabled}>Создать</button>
                 </div>
             </form>
         </Popup>

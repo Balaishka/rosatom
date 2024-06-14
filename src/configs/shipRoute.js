@@ -3,7 +3,7 @@ const shipRoute = [
     { // Часть маршрута с сопровождением
         id: 1,
         convoy: true, // Под сопровождением
-        icebreaker: id, // id сопровождающего ледокола
+        icebreaker: 12, // id сопровождающего ледокола
         routes: [
             {
                 time: 1718239910, // timestamp, время в которое этот корабль будет в точке
@@ -39,3 +39,5 @@ const shipRoute = [
         ]
     }
 ];
+
+module.exports = { shipRoute };

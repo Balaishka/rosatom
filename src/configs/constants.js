@@ -13,5 +13,6 @@ const roles = [
 
   const applications = ["В маршруте", "В обработке", "Архив"];
   const months = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+  const nodeCases = ["узел", "узла", "узлов"];
 
-  module.exports = { roles, applications, months };
+  module.exports = { roles, applications, months, nodeCases };

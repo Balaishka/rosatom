@@ -4,13 +4,17 @@ import { useState } from "react";
 import { applications } from "../../configs/constants";
 import ApplicationsConstructor from "../ApplicationsConstructor/ApplicationsConstructor";
 
-export default function Applications({ applicationsPoints, allApplications }) {
+export default function Applications({ applicationsPoints, allApplications, setIsPopupNewApplication }) {
 
     const [isOpen, setIsOpen] = useState(true);
     const [selectedApplications, setSelectedApplications] = useState(Number(localStorage.getItem("selectedApplications")) ? Number(localStorage.getItem("selectedApplications")):0);
 
     function toggleMenu() {
         setIsOpen(!isOpen);
+    }
+
+    function openPopup() {
+        setIsPopupNewApplication(true);
     }
 
     return (
@@ -42,23 +46,22 @@ export default function Applications({ applicationsPoints, allApplications }) {
                         <div className="applications__block">
                             <ul className="applications__list">
                                 {selectedApplications === 0 && 
-                                    <ApplicationsConstructor applications={allApplications.agreed} text="Согласованных маршрутов пока нет" status="agreed" />
+                                    <ApplicationsConstructor applications={allApplications.agreed} text="Согласованных заявок пока нет" status="agreed" />
                                 }
 
                                 {selectedApplications === 1 && 
-                                    <ApplicationsConstructor applications={allApplications.pending} text="Заявок в обработке пока нет" status="pending" />
+                                    <ApplicationsConstructor applications={allApplications.pending} text="Заявок в обработке пока нет. Вы можете создать новую, нажав кнопку ниже." status="pending" />
                                 }
 
                                 {selectedApplications === 2 && 
-                                    <ApplicationsConstructor applications={allApplications.archive} text="Маршрутов в архиве пока нет" status="archive" />
+                                    <ApplicationsConstructor applications={allApplications.archive} text="Здесь пока ничего нет" status="archive" />
                                 }
                             </ul>
                         </div>
-                        
                     </div>
 
                     <div className="applications__footer">
-                        <button className="applications__btn content__btn" type="button">Новая заявка</button>
+                        <button className="applications__btn content__btn" type="button" onClick={openPopup}>Новая заявка</button>
                     </div>
                 </div>
             }

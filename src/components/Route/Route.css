@@ -11,7 +11,7 @@
 }
 
 .route__point {
-    width: max-content;
+    width: 100%;
 }
 
 .route__point-name {
@@ -20,7 +20,6 @@
     line-height: 1.23;
     margin-bottom: 4px;
     display: block;
-    white-space: nowrap;
 }
 
 .route__point-date {
@@ -40,6 +39,7 @@
     position: relative;
     overflow: hidden;
     position: relative;
+    min-width: 20px;
 }
 
 .route__arrow::before {

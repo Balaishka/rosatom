@@ -83,6 +83,30 @@ class MainApi {
   getAllApplications() {
     return this._fetch("/navigation/route-requests", "GET");
   }
+
+  // Подача новой заявки
+  setNewApplication({ shipId, startPointId, finishPointId, startDate}) {
+    return this._fetchWithBody("/navigation/route-requests", "PUT", {
+      shipId : shipId,
+      startPointId : startPointId,
+      finishPointId : finishPointId,
+      startDate : startDate
+     });
+  }
+
+  // Ледовые классы
+  getIceClasses() {
+    return this._fetch("/ship/ice-classes", "GET");
+  }
+
+  // Новое судно
+  setNewShip({ name, speed, iceClass}) {
+    return this._fetchWithBody("/ship/ships", "PUT", {
+      name : name,
+      speed: speed,
+      iceClass: iceClass
+     });
+  }
 }
 
 // Создаем класс апи
