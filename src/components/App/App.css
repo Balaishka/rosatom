@@ -26,8 +26,9 @@ body::-webkit-scrollbar-thumb {
 
 .page {
   min-height: 100vh;
-  height: max-content;
+  height: 100vh;
   position: relative;
+  overflow: hidden;
 }
 
 .content {

@@ -3,7 +3,9 @@ import Maps from "../Maps/Maps";
 import "./Main.css";
 import Applications from "../Applications/Applications";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import TimeController from "../TimeController/TimeController";
+import MyCalendar from "../MyCalendar/MyCalendar";
+import AdminApplications from "../AdminApplications/AdminApplications";
+import { shipRoute } from "../../configs/shipRoute";
 
 export default function Main({
   getNavigationPoints,
@@ -12,7 +14,8 @@ export default function Main({
   applicationsPoints,
   allApplications,
   setIsPopupNewApplication,
-  addZero
+  addZero,
+  setInfoShip
 }) {
   const [shipGeo, setShipGeo] = useState(0);
   const currentUser = useContext(CurrentUserContext);
@@ -22,32 +25,31 @@ export default function Main({
     getNavigationPoints();
   }, []);
 
-  function change(e) {
-    setShipGeo(Number(e.target.value));
-  }
-
   return (
-    <section className="main">
-      <Maps navPoints={navPoints} shipGeo={shipGeo} />
-      {currentUser.currentUser.role === "CAPTAIN" ? (
+    <section className={`main ${currentUser.currentUser.role === "ADMIN" ? "main_admin":""}`}>
+      {currentUser.currentUser.role === "CAPTAIN" && (
         <Applications
           applicationsPoints={applicationsPoints}
           allApplications={allApplications}
           setIsPopupNewApplication={setIsPopupNewApplication}
         />
-      ) : (
-        <></>
       )}
+
+      {currentUser.currentUser.role === "ADMIN" && (
+        <AdminApplications
+          applicationsPoints={applicationsPoints}
+          allApplications={allApplications}
+          setIsPopupNewApplication={setIsPopupNewApplication}
+          setInfoShip={setInfoShip}
+        />
+      )}
+
+      <div className="main__maps">
+        <Maps navPoints={navPoints} shipGeo={shipGeo} shipRoute={shipRoute} />
+      </div>
+      
       <div className="main__time">
-        {/* <input
-          className="main__input"
-          type="range"
-          min="0"
-          max="3"
-          value={shipGeo}
-          onChange={change}
-        /> */}
-        <TimeController addZero={addZero} />
+        <MyCalendar addZero={addZero} shipRoute={[]} shipGeo={shipGeo} setShipGeo={setShipGeo} />
       </div>
     </section>
   );

@@ -11,7 +11,12 @@
 }
 
 .route__point {
-    width: 100%;
+    width: max-content;
+    max-width: calc(50% - 10px);
+}
+
+.route__point:last-child {
+    text-align: right;
 }
 
 .route__point-name {
@@ -20,6 +25,8 @@
     line-height: 1.23;
     margin-bottom: 4px;
     display: block;
+    width: max-content;
+    max-width: 100%;
 }
 
 .route__point-date {

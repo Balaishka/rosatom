@@ -9,6 +9,7 @@
     grid-template-rows: max-content 1fr;
     border-radius: 12px;
     box-shadow: 0px 8px 32px 0px rgba(12, 16, 24, 0.12);
+    z-index: 9;
 }
 
 .applications_closed {

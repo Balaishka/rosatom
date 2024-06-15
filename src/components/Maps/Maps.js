@@ -5,23 +5,51 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { YMaps, Map, Polyline, Placemark, ObjectManager, Clusterer } from "@pbe/react-yandex-maps";
 import icon from "../../images/icon.png";
 import pointIcon from "../../images/point.svg";
+import icebreaker1 from "../../images/icebreakers/icebreaker-1.png";
+import icebreaker2 from "../../images/icebreakers/icebreaker-2.png";
+import icebreaker3 from "../../images/icebreakers/icebreaker-3.png";
+import icebreaker4 from "../../images/icebreakers/icebreaker-4.png";
 
-export default function Maps({ navPoints, shipGeo }) {
+export default function Maps({ navPoints, shipGeo, shipRoute }) {
     const [geometryPoints, setGeometryPoints] = useState([]);
+    const [geometry, setGeometry] = useState([]);
+    const [icebreakersInfo, setIcebreakersInfo] = useState([]);
 
     const ymap = useRef(null);
     const ymaps = useRef(null);
-    const geometry = [[70.28319, 57.787407], [71.284454, 60.68428], [74.284454, 62.68428], [75.284454, 66.68428]];
+    const testGeometry = [[70.28319, 57.787407], [71.284454, 60.68428], [74.284454, 62.68428], [75.284454, 66.68428]];
 
     const onLoad = useCallback(it => {
             ymaps.current = it;
-            const layer = new ymaps.current.Layer('https://overwave.dev/icebreaker/tiles/2020-03-03/%z/%x-%y.jpg', {tileTransparent: true});
+            const layer = new ymaps.current.Layer('https://overwave.dev/icebreaker/tiles/2024-03-03/%z/%x-%y.jpg', {tileTransparent: true});
             ymap.current.layers.add(layer);
         }, [ymap, ymaps]
     );
     const onMapReference = useCallback(ref => {
         ymap.current = ref;
     }, [ymap]);
+
+    useEffect(() => {
+        let newRoute = [];
+        let newIcebreakersInfo = [];
+
+        shipRoute.map((r) => {
+            console.log(r);
+            r.routes.map((route) => {
+                const point = [route.point.lat, route.point.lon];
+                newRoute.push(point);
+                
+                icebreakersInfo.push({
+                    convoy: r.convoy,
+                    id: r.icebreaker
+                });
+            });
+        });
+
+        console.log(icebreakersInfo);
+        setGeometry(newRoute);
+        setIcebreakersInfo(icebreakersInfo);
+    }, []);
 
     useEffect(() => {
         if (navPoints.length) {
@@ -35,6 +63,18 @@ export default function Maps({ navPoints, shipGeo }) {
             setGeometryPoints(arr);
         }
     }, [navPoints]);
+
+    function getIcebreakerIcon(id) {
+        if (id === 1) {
+            return icebreaker1;
+        } else if (id === 2) {
+            return icebreaker2;
+        } else if (id === 3) {
+            return icebreaker3;
+        } else if (id === 4) {
+            return icebreaker4;
+        }
+    }
 
     return (
         <>
@@ -50,15 +90,14 @@ export default function Maps({ navPoints, shipGeo }) {
                          instanceRef={onMapReference}
                          style={{width: '100%', height: '100%'}}
                     >
-                        {/* <Polyline geometry={geometry} options={{
+                        <Polyline geometry={geometry} options={{
                             balloonCloseButton: false,
-                            strokeColor: '#f85858',
-                            strokeWidth: 2,
-                            strokeOpacity: 0.5
-                        }}></Polyline> */}
+                            strokeColor: '#4480F3',
+                            strokeWidth: 2
+                        }}></Polyline>
 
                         <Clusterer options={{
-                            preset: "islands#invertedVioletClusterIcons",
+                            preset: "islands#invertedBlueClusterIcons",
                             groupByCoordinates: false
                             }}>
                                 {geometryPoints.map((point, index) => {
@@ -66,20 +105,29 @@ export default function Maps({ navPoints, shipGeo }) {
                                         iconLayout: "default#image",
                                         iconImageSize: [17, 17],
                                         iconImageHref: pointIcon,
-                                        iconOffset: [0, 0]
-                                      }} properties={{
+                                        iconOffset: [3, 29]
+                                    }} properties={{
                                         balloonContentBody:
                                             point.name
-                                      }} />
+                                    }} />
                                 })}
                         </Clusterer>
 
                         <Placemark geometry={geometry[shipGeo]} options={{
                             iconLayout: "default#image",
-                            iconImageSize: [50, 50],
+                            iconImageSize: [105, 57],
                             iconImageHref: icon,
-                            iconOffset: [-15, 12]
+                            iconOffset: [-35, 0]
                           }} />
+
+                        {icebreakersInfo[shipGeo] && icebreakersInfo[shipGeo].convoy && 
+                            <Placemark geometry={geometry[shipGeo]} options={{
+                                iconLayout: "default#image",
+                                iconImageSize: [126, 68],
+                                iconImageHref: getIcebreakerIcon(icebreakersInfo[shipGeo].id),
+                                iconOffset: [35, -35]
+                              }} />
+                        }
                     </Map>
             </YMaps>
         </>

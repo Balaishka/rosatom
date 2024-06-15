@@ -41,12 +41,13 @@ function App() {
   const [navPoints, setNavPoints] = useState(localStorage.getItem("navPoints") ? JSON.parse(localStorage.getItem("navPoints")):[]);
 
   // Количество заявок Пользователя
-  const [applicationsPoints, setApplicationsPoints] = useState(
-    localStorage.getItem("applicationsPoints")
-      ? JSON.parse(localStorage.getItem("applicationsPoints"))
-      : [0, 0, 0]
+  const [applicationsPoints, setApplicationsPoints] = useState({
+        agreed: 0,
+        pending: 0,
+        archive: 0
+      }
   );
-  const [allApplications, setAllApplications] = useState(localStorage.getItem("allApplications") ? localStorage.getItem("allApplications"):[]);
+  const [allApplications, setAllApplications] = useState([]);
 
   // Попапы
   const [isPopupNewApplication, setIsPopupNewApplication] = useState(false);
@@ -189,16 +190,14 @@ function App() {
     mainApi
       .getAllApplications()
       .then((res) => {
-        console.log(res);
+        //console.log(res);
         setAllApplications(res);
-        localStorage.setItem("allApplications", res);
 
-        const points = [
-          res.agreed.length,
-          res.pending.length,
-          res.archive.length,
-        ];
-        localStorage.setItem("applicationsPoints", JSON.stringify(points));
+        const points = {
+          agreed: res.agreed.length,
+          pending: res.pending.length,
+          archive: res.archive.length,
+        };
         setApplicationsPoints(points);
       })
       .catch((err) => {
@@ -222,14 +221,12 @@ function App() {
           archive: allApplications.archive
         };
         setAllApplications(newApplications);
-        localStorage.setItem("allApplications", newApplications);
 
-        const points = [
-          newApplications.agreed.length,
-          newApplications.pending.length,
-          newApplications.archive.length,
-        ];
-        localStorage.setItem("applicationsPoints", JSON.stringify(points));
+        const points = {
+          agreed: newApplications.agreed.length,
+          pending: newApplications.pending.length,
+          archive: newApplications.archive.length,
+        };
         setApplicationsPoints(points);
 
         closeAllPopups();
@@ -362,6 +359,7 @@ function App() {
                   allApplications={allApplications}
                   setIsPopupNewApplication={setIsPopupNewApplication}
                   addZero={addZero}
+                  setInfoShip={setInfoShip}
                 />
               </ProtectedRoute>
 

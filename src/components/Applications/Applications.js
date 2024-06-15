@@ -36,8 +36,8 @@ export default function Applications({ applicationsPoints, allApplications, setI
                                     }
                                     return (
                                         <li key={index} className={`applications__nav-item ${selectedApplications === index ? "applications__nav-item_active":""}`} onClick={onClick}>
-                                            <span className="applications__nav-text">{item}</span>
-                                            <span className="applications__nav-number">{applicationsPoints[index]}</span>
+                                            <span className="applications__nav-text">{item.name}</span>
+                                            <span className="applications__nav-number">{applicationsPoints[item.type]}</span>
                                         </li>
                                     );
                                 })}

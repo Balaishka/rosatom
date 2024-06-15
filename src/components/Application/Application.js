@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { months } from "../../configs/constants";
 import Route from "../Route/Route";
 
-export default function Application({ application, status }) {
+export default function Application({ application, status, myClass }) {
   const [dates, setDates] = useState({
     start: "",
     finish: "",
@@ -36,7 +36,7 @@ export default function Application({ application, status }) {
 
   if (application) {
     return (
-      <li className="application">
+      <li className={`application ${myClass ? `application-${myClass}`:""}`}>
         <div className="application__header">
           {application.convoy && (
             <div className="application__icebreaker">
