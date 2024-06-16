@@ -5,7 +5,6 @@ import Applications from "../Applications/Applications";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import MyCalendar from "../MyCalendar/MyCalendar";
 import AdminApplications from "../AdminApplications/AdminApplications";
-import { shipRoute } from "../../configs/shipRoute";
 
 export default function Main({
   getNavigationPoints,
@@ -15,7 +14,17 @@ export default function Main({
   allApplications,
   setIsPopupNewApplication,
   addZero,
-  setInfoShip
+  setInfoShip,
+  shipRoute,
+  getShipRoute,
+  getAllIcebreaker,
+  allIcebreakers,
+  setNewRouteList,
+  getGantt,
+  getIceGantt,
+  getIceRoute,
+  iceRoute,
+  idIcebreaker,
 }) {
   const [shipGeo, setShipGeo] = useState(0);
   const currentUser = useContext(CurrentUserContext);
@@ -26,12 +35,19 @@ export default function Main({
   }, []);
 
   return (
-    <section className={`main ${currentUser.currentUser.role === "ADMIN" ? "main_admin":""}`}>
+    <section
+      className={`main ${
+        currentUser.currentUser.role === "ADMIN" ? "main_admin" : ""
+      }`}
+    >
       {currentUser.currentUser.role === "CAPTAIN" && (
         <Applications
           applicationsPoints={applicationsPoints}
           allApplications={allApplications}
           setIsPopupNewApplication={setIsPopupNewApplication}
+          getShipRoute={getShipRoute}
+          setInfoShip={setInfoShip}
+          getGantt={getGantt}
         />
       )}
 
@@ -39,17 +55,36 @@ export default function Main({
         <AdminApplications
           applicationsPoints={applicationsPoints}
           allApplications={allApplications}
-          setIsPopupNewApplication={setIsPopupNewApplication}
           setInfoShip={setInfoShip}
+          getShipRoute={getShipRoute}
+          getAllIcebreaker={getAllIcebreaker}
+          allIcebreakers={allIcebreakers}
+          setNewRouteList={setNewRouteList}
+          getGantt={getGantt}
+          getIceGantt={getIceGantt}
+          getIceRoute={getIceRoute}
+          idIcebreaker={idIcebreaker}
         />
       )}
 
       <div className="main__maps">
-        <Maps navPoints={navPoints} shipGeo={shipGeo} shipRoute={shipRoute} />
+        <Maps
+          navPoints={navPoints}
+          shipGeo={shipGeo}
+          shipRoute={shipRoute}
+          iceRoute={iceRoute}
+          idIcebreaker={idIcebreaker}
+        />
       </div>
-      
+
       <div className="main__time">
-        <MyCalendar addZero={addZero} shipRoute={[]} shipGeo={shipGeo} setShipGeo={setShipGeo} />
+        <MyCalendar
+          addZero={addZero}
+          shipRoute={shipRoute}
+          iceRoute={iceRoute}
+          shipGeo={shipGeo}
+          setShipGeo={setShipGeo}
+        />
       </div>
     </section>
   );

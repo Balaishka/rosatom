@@ -19,6 +19,7 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import PopupNewApplication from "../PopupNewApplication/PopupNewApplication";
 import { nodeCases } from "../../configs/constants";
 import PopupNewShip from "../PopupNewShip/PopupNewShip";
+import PreloaderRoutes from "../PreloaderRoutes/PreloaderRoutes";
 
 function App() {
   // Ошибки
@@ -27,6 +28,7 @@ function App() {
 
   // Загрузка
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingRoutes, setIsLoadingRoutes] = useState(false);
 
   // Пользователь
   const [loggedIn, setLoggedIn] = useState(
@@ -38,15 +40,18 @@ function App() {
   });
 
   // Опорные точки
-  const [navPoints, setNavPoints] = useState(localStorage.getItem("navPoints") ? JSON.parse(localStorage.getItem("navPoints")):[]);
+  const [navPoints, setNavPoints] = useState(
+    localStorage.getItem("navPoints")
+      ? JSON.parse(localStorage.getItem("navPoints"))
+      : []
+  );
 
   // Количество заявок Пользователя
   const [applicationsPoints, setApplicationsPoints] = useState({
-        agreed: 0,
-        pending: 0,
-        archive: 0
-      }
-  );
+    agreed: 0,
+    pending: 0,
+    archive: 0,
+  });
   const [allApplications, setAllApplications] = useState([]);
 
   // Попапы
@@ -58,6 +63,28 @@ function App() {
 
   // Ледовые классы
   const [iceClasses, setIceClasses] = useState([]);
+
+  // Маршрут корабля
+  const [shipRoute, setShipRoute] = useState(
+    localStorage.getItem("shipRoute")
+      ? JSON.parse(localStorage.getItem("shipRoute"))
+      : []
+  );
+
+  // Маршрут ледокола
+  const [iceRoute, setIceRoute] = useState(
+    localStorage.getItem("iceRoute")
+      ? JSON.parse(localStorage.getItem("iceRoute"))
+      : []
+  );
+  const [idIcebreaker, setIdIcebreaker] = useState(
+    localStorage.getItem("idIcebreaker")
+      ? JSON.parse(localStorage.getItem("idIcebreaker"))
+      : undefined
+  );
+
+  // Все ледоколы
+  const [allIcebreakers, setAllIcebreakers] = useState([]);
 
   const history = useHistory();
   const { pathname } = useLocation();
@@ -96,9 +123,9 @@ function App() {
       .authorize({ login, password })
       .then((res) => {
         if (res.result === "SUCCESS") {
-          window.location.reload();
           localStorage.setItem("loggedIn", true);
           setLoggedIn(true);
+          window.location.reload();
         }
       })
       .catch((err) => {
@@ -139,6 +166,7 @@ function App() {
           login: "",
         });
         setLoggedIn(false);
+        window.location.reload();
       })
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
@@ -172,7 +200,6 @@ function App() {
     mainApi
       .getNavigationPoints()
       .then((res) => {
-        //console.log(res);
         setNavPoints(res);
         localStorage.setItem("navPoints", JSON.stringify(res));
       })
@@ -190,7 +217,6 @@ function App() {
     mainApi
       .getAllApplications()
       .then((res) => {
-        //console.log(res);
         setAllApplications(res);
 
         const points = {
@@ -209,16 +235,20 @@ function App() {
   }
 
   // Подача новой заявки
-  function setNewApplication({ shipId, startPointId, finishPointId, startDate}) {
+  function setNewApplication({
+    shipId,
+    startPointId,
+    finishPointId,
+    startDate,
+  }) {
     setIsLoading(true);
     mainApi
-      .setNewApplication({ shipId, startPointId, finishPointId, startDate})
+      .setNewApplication({ shipId, startPointId, finishPointId, startDate })
       .then((res) => {
-        console.log(res);
         const newApplications = {
           agreed: allApplications.agreed,
           pending: res.pending,
-          archive: allApplications.archive
+          archive: allApplications.archive,
         };
         setAllApplications(newApplications);
 
@@ -256,12 +286,11 @@ function App() {
   }
 
   // Создание нового корабля
-  function setNewShip({ name, speed, iceClass}) {
+  function setNewShip({ name, speed, iceClass }) {
     setIsLoading(true);
     mainApi
-      .setNewShip({ name, speed, iceClass})
+      .setNewShip({ name, speed, iceClass })
       .then((res) => {
-        console.log(res.ships);
         setShips(res.ships);
 
         setIsPopupNewShip(false);
@@ -290,6 +319,129 @@ function App() {
       });
   }
 
+  // Маршрут корабля
+  function getShipRoute({ id }) {
+    setIsLoading(true);
+    mainApi
+      .getShipRoute({ id })
+      .then((res) => {
+        setIceRoute([]);
+        localStorage.removeItem("iceRoute");
+        setIdIcebreaker(undefined);
+        localStorage.removeItem("idIcebreaker");
+
+        setShipRoute(res);
+        localStorage.setItem("shipRoute", JSON.stringify(res));
+
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  // Маршрут ледокола
+  function getIceRoute(id) {
+    setIsLoading(true);
+    mainApi
+      .getIceRoute(id)
+      .then((res) => {
+        setShipRoute([]);
+        localStorage.removeItem("shipRoute");
+        localStorage.removeItem("activeApplication");
+
+        setIdIcebreaker(id);
+        localStorage.setItem("idIcebreaker", id);
+
+        setIceRoute(res.segments);
+        localStorage.setItem("iceRoute", JSON.stringify(res.segments));
+
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  // Все ледоколы
+  function getAllIcebreaker() {
+    setIsLoading(true);
+    mainApi
+      .getAllIcebreaker()
+      .then((res) => {
+        setAllIcebreakers(res.icebreakers);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  // Формирование нового маршрута
+  function setNewRouteList() {
+    setIsLoadingRoutes(true);
+    mainApi
+      .setNewRouteList()
+      .then((res) => {
+        setAllApplications(res);
+
+        const points = {
+          agreed: res.agreed.length,
+          pending: res.pending.length,
+          archive: res.archive.length,
+        };
+        setApplicationsPoints(points);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+      .finally(() => {
+        setIsLoadingRoutes(false);
+      });
+  }
+
+  // Скачать Ганта маршрутов кораблей
+  function getGantt() {
+    setIsLoading(true);
+    mainApi
+      .getGantt()
+      .then((res) => {
+        const file = window.URL.createObjectURL(res);
+        window.location.assign(file);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  // Скачать Ганта маршрутов ледокола
+  function getIceGantt(id) {
+    setIsLoading(true);
+    mainApi
+      .getIceGantt(id)
+      .then((res) => {
+        const file = window.URL.createObjectURL(res);
+        window.location.assign(file);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
   // Закрыть попапы
   function closeAllPopups() {
     setIsPopupNewApplication(false);
@@ -309,10 +461,10 @@ function App() {
   function getNodeCases(num) {
     const str = String(num);
     const lastNum = Number(str[str.length - 1]);
-    
+
     if (lastNum === 1 && (num < 10 || num > 20)) {
       return nodeCases[0];
-    } else if ((lastNum >= 2 && lastNum <= 4) && (num < 10 || num > 20)) {
+    } else if (lastNum >= 2 && lastNum <= 4 && (num < 10 || num > 20)) {
       return nodeCases[1];
     } else {
       return nodeCases[2];
@@ -325,22 +477,30 @@ function App() {
     const name = arr[0].toLowerCase();
     const str = name[0].toUpperCase() + name.slice(1);
     const num = arr[1];
-    return `${str} ${num}`
+    let newStr = " ";
+    if (arr[2]) {
+      for (let i = 2; i < arr.length; i++) {
+        newStr += " " + arr[i];
+      }
+    }
+    return `${str} ${num ? num : ""} ${newStr.toLowerCase()}`;
   }
 
   // Создание описания класса и скорости корабля
-  function setInfoShip(shipClass, shipSpeed) {
-    const iceClass = setIceClass(shipClass);
-    const speed = getNodeCases(shipSpeed);
-    return `${iceClass}, ${shipSpeed} ${speed}`;
+  function setInfoShip(shipClass, shipSpeed = 0) {
+    const iceClass = shipClass ? setIceClass(shipClass) : "";
+    const speed = shipSpeed ? getNodeCases(shipSpeed) : "";
+    return `${iceClass}${iceClass && shipSpeed ? ", " : ""}${
+      shipSpeed ? shipSpeed : ""
+    } ${speed}`;
   }
 
   function addZero(number) {
-      if (String(number).length === 1) {
-          return `0${number}`;
-      } else {
-          return String(number);
-      }
+    if (String(number).length === 1) {
+      return `0${number}`;
+    } else {
+      return String(number);
+    }
   }
 
   return (
@@ -360,6 +520,16 @@ function App() {
                   setIsPopupNewApplication={setIsPopupNewApplication}
                   addZero={addZero}
                   setInfoShip={setInfoShip}
+                  shipRoute={shipRoute}
+                  getShipRoute={getShipRoute}
+                  getAllIcebreaker={getAllIcebreaker}
+                  allIcebreakers={allIcebreakers}
+                  setNewRouteList={setNewRouteList}
+                  getGantt={getGantt}
+                  getIceGantt={getIceGantt}
+                  getIceRoute={getIceRoute}
+                  iceRoute={iceRoute}
+                  idIcebreaker={idIcebreaker}
                 />
               </ProtectedRoute>
 
@@ -386,33 +556,38 @@ function App() {
             </Switch>
           </main>
 
-        {isPopupNewApplication && 
-          <PopupNewApplication
-            onClose={closeAllPopups}
-            ships={ships}
-            changeOption={changeOption}
-            navPoints={navPoints}
-            setNewApplication={setNewApplication}
-            getShips={getShips}
-            setInfoShip={setInfoShip}
-            openPopupShip={() => {setIsPopupNewShip(true)}}
-            addZero={addZero}
-          />
-        }
-          
-          {isPopupNewShip && 
+          {isPopupNewApplication && (
+            <PopupNewApplication
+              onClose={closeAllPopups}
+              ships={ships}
+              changeOption={changeOption}
+              navPoints={navPoints}
+              setNewApplication={setNewApplication}
+              getShips={getShips}
+              setInfoShip={setInfoShip}
+              openPopupShip={() => {
+                setIsPopupNewShip(true);
+              }}
+              addZero={addZero}
+            />
+          )}
+
+          {isPopupNewShip && (
             <PopupNewShip
-              onClose={() => {setIsPopupNewShip(false)}}
+              onClose={() => {
+                setIsPopupNewShip(false);
+              }}
               iceClasses={iceClasses}
               getIceClasses={getIceClasses}
               changeOption={changeOption}
               setIceClass={setIceClass}
               setNewShip={setNewShip}
             />
-          }
-          
+          )}
 
           <Preloader isLoading={isLoading} />
+
+          <PreloaderRoutes isLoadingRoutes={isLoadingRoutes} />
         </div>
       </CurrentUserContext.Provider>
     </>

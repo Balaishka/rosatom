@@ -20,7 +20,6 @@ function PageNotFound({ history }) {
           </button>
         </nav>
       </div>
-      
     </section>
   );
 }

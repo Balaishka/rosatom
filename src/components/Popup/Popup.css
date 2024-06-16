@@ -1,78 +1,78 @@
 .popup {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    padding: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-    z-index: 10;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  z-index: 10;
 }
 
 .popup__close {
-    position: absolute;
-    top: 40px;
-    right: 40px;
-    border: none;
-    background-color: transparent;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 }
 
 .popup__close-img {
-    width: 100%;
+  width: 100%;
 }
 
 .popup__close:hover path {
-    fill: #4480F3;
+  fill: #4480f3;
 }
 
 .popup__container {
-    padding: 10px;
-    width: 100%;
-    max-width: 612px;
+  padding: 10px;
+  width: 100%;
+  max-width: 612px;
 }
 
 .popup__title {
-    font-weight: 700;
-    font-size: 32px;
-    line-height: 1.12;
-    margin: 0 0 32px;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.12;
+  margin: 0 0 32px;
 }
 
 /* Ship */
 
 .popup__back {
-    display: none;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 1.25;
-    color: #4480F3;
-    align-items: center;
-    transition: .1s ease-in-out;
-    position: absolute;
-    top: 40px;
-    left: 40px;
+  display: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #4480f3;
+  align-items: center;
+  transition: 0.1s ease-in-out;
+  position: absolute;
+  top: 40px;
+  left: 40px;
 }
 
 .popup__back:hover {
-    color: #578DF4;
+  color: #578df4;
 }
 
 .popup__back-img {
-    margin-right: 6px;
+  margin-right: 6px;
 }
 
 .popup-ship .popup__close {
-    display: none;
+  display: none;
 }
 
 .popup-ship .popup__back {
-    display: flex;
+  display: flex;
 }

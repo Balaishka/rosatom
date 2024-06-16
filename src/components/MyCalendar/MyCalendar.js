@@ -3,7 +3,7 @@ import "react-calendar/dist/Calendar.css";
 import { useEffect, useRef, useState } from "react";
 import Time from "../Time/Time";
 
-function MyCalendar({ addZero, shipRoute, shipGeo, setShipGeo }) {
+function MyCalendar({ addZero, shipRoute, shipGeo, setShipGeo, iceRoute }) {
   const [linearCalendar, setLinearCalendar] = useState([]);
 
   // Стрелки
@@ -14,7 +14,7 @@ function MyCalendar({ addZero, shipRoute, shipGeo, setShipGeo }) {
   const calendarContainer = useRef(null);
   const calendarBlock = useRef(null);
   const calendarList = useRef(null);
-  
+
   let num = undefined;
 
   useEffect(() => {
@@ -85,7 +85,6 @@ function MyCalendar({ addZero, shipRoute, shipGeo, setShipGeo }) {
 
               return r.routes.map((route, index) => {
                 let isDay = false;
-                let isActive = false;
 
                 if (num === undefined) {
                   num = 0;
@@ -105,7 +104,50 @@ function MyCalendar({ addZero, shipRoute, shipGeo, setShipGeo }) {
                 }
 
                 return (
-                  <Time key={index} day={isDay ? day:""} time={time} num={num} shipGeo={shipGeo} setShipGeo={setShipGeo} />
+                  <Time
+                    key={index}
+                    day={isDay ? day : ""}
+                    time={time}
+                    num={num}
+                    shipGeo={shipGeo}
+                    setShipGeo={setShipGeo}
+                  />
+                );
+              });
+            })}
+
+            {iceRoute.map((r) => {
+              let visibleDay = "";
+
+              return r.routes.map((route, index) => {
+                let isDay = false;
+
+                if (num === undefined) {
+                  num = 0;
+                } else {
+                  num++;
+                }
+
+                const date = new Date(route.time * 1000);
+                const day = `${addZero(date.getDate())}.${addZero(
+                  date.getMonth() + 1
+                )}`;
+                const time = `${addZero(date.getHours())}:00`;
+
+                if (visibleDay !== day) {
+                  visibleDay = day;
+                  isDay = true;
+                }
+
+                return (
+                  <Time
+                    key={index}
+                    day={isDay ? day : ""}
+                    time={time}
+                    num={num}
+                    shipGeo={shipGeo}
+                    setShipGeo={setShipGeo}
+                  />
                 );
               });
             })}

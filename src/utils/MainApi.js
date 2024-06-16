@@ -12,13 +12,30 @@ class MainApi {
     return Promise.reject(res);
   }
 
+  _checkResponseFILE(res) {
+    if (res.ok) {
+      return res.blob();
+    }
+
+    return Promise.reject(res);
+  }
+
   // Базовый запрос без тела
   _fetch(way, methodName) {
     return fetch(`${this._url}${way}`, {
       method: methodName,
       headers: this._headers,
-      credentials: 'include'
+      credentials: "include",
     }).then(this._checkResponse);
+  }
+
+  // Базовый запрос без тела FILE
+  _fetchFile(way, methodName) {
+    return fetch(`${this._url}${way}`, {
+      method: methodName,
+      headers: this._headers,
+      credentials: "include",
+    }).then(this._checkResponseFILE);
   }
 
   // Запрос с телом
@@ -27,7 +44,7 @@ class MainApi {
       method: methodName,
       headers: this._headers,
       body: JSON.stringify(bodyContent),
-      credentials: 'include'
+      credentials: "include",
     }).then(this._checkResponse);
   }
 
@@ -36,7 +53,7 @@ class MainApi {
     return fetch(`${this._url}${way}`, {
       method: methodName,
       body: bodyContent,
-      credentials: 'include'
+      credentials: "include",
     }).then(this._checkResponse);
   }
 
@@ -52,9 +69,9 @@ class MainApi {
   // Авторизация
   authorize({ login, password }) {
     const formData = new FormData();
-    formData.append('username', login);
-    formData.append('password', password);
-    formData.append('remember-me', 'true');
+    formData.append("username", login);
+    formData.append("password", password);
+    formData.append("remember-me", "true");
 
     return this._fetchWithBodyFD("/user/login", "POST", formData);
   }
@@ -85,13 +102,13 @@ class MainApi {
   }
 
   // Подача новой заявки
-  setNewApplication({ shipId, startPointId, finishPointId, startDate}) {
+  setNewApplication({ shipId, startPointId, finishPointId, startDate }) {
     return this._fetchWithBody("/navigation/route-requests", "PUT", {
-      shipId : shipId,
-      startPointId : startPointId,
-      finishPointId : finishPointId,
-      startDate : startDate
-     });
+      shipId: shipId,
+      startPointId: startPointId,
+      finishPointId: finishPointId,
+      startDate: startDate,
+    });
   }
 
   // Ледовые классы
@@ -100,12 +117,48 @@ class MainApi {
   }
 
   // Новое судно
-  setNewShip({ name, speed, iceClass}) {
+  setNewShip({ name, speed, iceClass }) {
     return this._fetchWithBody("/ship/ships", "PUT", {
-      name : name,
+      name: name,
       speed: speed,
-      iceClass: iceClass
-     });
+      iceClass: iceClass,
+    });
+  }
+
+  // Получить выбранный маршрут корабля
+  getShipRoute({ id }) {
+    return this._fetch(
+      `/navigation/ship-route?navigationRequestId=${id}`,
+      "GET"
+    );
+  }
+
+  // Получить выбранный маршрут ледокола
+  getIceRoute(id) {
+    return this._fetch(`/icebreaker/route?icebreakerId=${id}`, "GET");
+  }
+
+  // Информация о ледоколах
+  getAllIcebreaker() {
+    return this._fetch("/icebreaker/all", "GET");
+  }
+
+  // Формирование маршрута
+  setNewRouteList() {
+    return this._fetch("/schedule/schedules", "PUT");
+  }
+
+  // Скачать согласованные маршруты
+  getGantt() {
+    return this._fetchFile("/schedule/gantt", "GET");
+  }
+
+  // Скачать маршрут ледокола
+  getIceGantt(id) {
+    return this._fetchFile(
+      `/schedule/gantt/icebreaker?icebreakerId=${id}`,
+      "GET"
+    );
   }
 }
 
@@ -113,7 +166,7 @@ class MainApi {
 const mainApi = new MainApi({
   baseUrl: "https://overwave.dev/icebreaker/api",
   headers: {
-    "content-type": "application/json"
+    "content-type": "application/json",
   },
 });
 

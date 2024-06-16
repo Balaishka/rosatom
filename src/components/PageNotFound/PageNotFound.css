@@ -34,7 +34,7 @@
   margin: 0 0 28px;
 }
 
-@media screen and (max-width:768px) {
+@media screen and (max-width: 768px) {
   .error__block {
     margin-right: 32px;
   }

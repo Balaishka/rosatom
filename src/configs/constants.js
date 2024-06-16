@@ -13,7 +13,7 @@ const roles = [
 
   const applications = [
     {
-      name: "В маршруте",
+      name: "Согласованные",
       type: "agreed"
     },
     {

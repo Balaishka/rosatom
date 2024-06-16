@@ -4,7 +4,13 @@ import { useState } from "react";
 import Application from "../Application/Application";
 import Parking from "../Parking/Parking";
 
-export default function Icebreaker({ icebreaker, info }) {
+export default function Icebreaker({
+  icebreaker,
+  info,
+  setInfoShip,
+  getIceGantt,
+  getIceRoute,
+}) {
   const [isRoutes, setIsRoutes] = useState(false);
   const [isArchive, setIsArchive] = useState(false);
 
@@ -15,9 +21,18 @@ export default function Icebreaker({ icebreaker, info }) {
   function toggleArchive() {
     setIsArchive(!isArchive);
   }
+
+  function downloadGantt() {
+    getIceGantt(icebreaker.id);
+  }
+
+  function onIceRoute() {
+    getIceRoute(icebreaker.id);
+  }
+
   return (
     <li className="icebreaker">
-      <div className="icebreaker__icebreaker">
+      <div className="icebreaker__icebreaker" onClick={onIceRoute}>
         <div
           className={`icebreaker__img icebreaker__img-${icebreaker.id}`}
         ></div>
@@ -38,24 +53,45 @@ export default function Icebreaker({ icebreaker, info }) {
           >
             Маршрутный лист
           </button>
-          <img
+          <button
+            type="button"
             className="icebreaker__download"
-            src={download}
-            alt="Скачать маршрутный лист"
-          />
+            onClick={downloadGantt}
+          >
+            <img
+              className="icebreaker__download-img"
+              src={download}
+              alt="Скачать маршрутный лист"
+            />
+          </button>
         </div>
         <div className="icebreaker__routes-body">
-            {isRoutes && 
-                <ul className="icebreaker__routes-list">
-                    {icebreaker.route.map((item, index) => {
-                        if (item.isParking) {
-                            return <Parking key={index} pointName={item.startPointName} startDate={item.startDate} finishDate={item.finishDate} />
-                        } else {
-                            return <Application key={index} application={item} status="pending" myClass="icebreaker" />
-                        }
-                    })}
-                </ul>
-            }
+          {isRoutes && (
+            <ul className="icebreaker__routes-list">
+              {icebreaker.route.map((item, index) => {
+                if (item.isParking) {
+                  return (
+                    <Parking
+                      key={index}
+                      pointName={item.startPointName}
+                      startDate={item.startDate}
+                      finishDate={item.finishDate}
+                    />
+                  );
+                } else {
+                  return (
+                    <Application
+                      key={index}
+                      application={item}
+                      status="pending"
+                      myClass="icebreaker"
+                      setInfoShip={setInfoShip}
+                    />
+                  );
+                }
+              })}
+            </ul>
+          )}
         </div>
       </div>
 
@@ -72,11 +108,11 @@ export default function Icebreaker({ icebreaker, info }) {
           </button>
         </div>
         <div className="icebreaker__archive-body">
-            {isArchive && 
-                <div className="icebreaker__archive-error">
-                    Здесь пока ничего нет
-                </div>
-            }
+          {isArchive && (
+            <div className="icebreaker__archive-error">
+              Здесь пока ничего нет
+            </div>
+          )}
         </div>
       </div>
     </li>

@@ -3,6 +3,7 @@ const icebreakerRoute = [
     { // Часть маршрута ледокола
         id: 1, // id части маршрута
         isParking: false, // Не простой (стоянка)
+        ships: true,
         routes: [
             {
                 time: 1718239910, // timestamp, время в которое этот ледокол будет в точке (point)
